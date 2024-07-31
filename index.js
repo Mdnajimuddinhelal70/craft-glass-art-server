@@ -11,7 +11,7 @@ app.use(express.json());
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.a7x3bqu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -26,7 +26,6 @@ async function run() {
     const formProductCollection = client
       .db("craftsDb")
       .collection("formProduct");
-
     app.get("/crafts", async (req, res) => {
       const result = await craftsCollection.find().toArray();
       res.send(result);
@@ -40,7 +39,6 @@ async function run() {
 
     //API for form product
     app.post("/formProduct", async (req, res) => {
-      console.log(req.body);
       const result = await formProductCollection.insertOne(req.body);
       console.log(result);
       res.send(result);
@@ -48,7 +46,6 @@ async function run() {
 
     // get data from form
     app.get("/craftList/:email", async (req, res) => {
-      console.log(req.params);
       const result = await formProductCollection
         .find({ email: req.params.email })
         .toArray();
@@ -65,7 +62,7 @@ async function run() {
     //details for card list from form
     app.get("/formDetails/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(req.params.id);
+
       const formDetails = await formProductCollection.findOne({
         _id: new ObjectId(id),
       });
@@ -73,7 +70,6 @@ async function run() {
     });
     // for form data fetching for update
     app.get("/formUpdate/:id", async (req, res) => {
-      console.log(req.params.id);
       const result = await formProductCollection.findOne({
         _id: new ObjectId(req.params.id),
       });
@@ -98,15 +94,15 @@ async function run() {
         },
       };
       const result = await formProductCollection.updateOne(query, data);
-      console.log(result);
+
       res.send(result);
     });
     //for delete item
-    app.delete("/delete/:id", async (req, res) => {
+    app.delete("/deleteCraft/:id", async (req, res) => {
       const result = await formProductCollection.deleteOne({
         _id: new ObjectId(req.params.id),
       });
-      console.log(result);
+
       res.send(result);
     });
 
